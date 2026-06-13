@@ -11,8 +11,18 @@ paths:
   data_raw_cds: data/raw/cds
   data_processed: data/processed
   data_cds_overlap: data/external/cds_overlap
+  plantvillage_manifest: data/processed/plantvillage_manifest.csv
+  plantvillage_splits: data/processed/plantvillage_splits.csv
   outputs: outputs
   checkpoints: outputs/checkpoints
+
+# Leaf-grouped split (M3). Ratios apply to LEAVES, not images, and are enforced
+# per class so each split is stratified AND leaf-disjoint. Uses top-level `seed`.
+split:
+  train: 0.70
+  val: 0.15
+  test: 0.15
+  image_size: 224       # EfficientNet-B0 input; eval uses the weights' own transforms()
 
 training:
   batch_size: 32
