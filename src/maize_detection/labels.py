@@ -51,12 +51,15 @@ def validate_mapping(mapping: Mapping[str, str | None]) -> None:
     this function ensures it fails loudly instead.
     """
     for source, target in mapping.items():
+        if target is None:
+            continue  # None == "excluded class"; always a valid mapping
+
         # Check explicitly forbidden source→target pairs
         if (source, target) in _FORBIDDEN:
             raise ValueError(_FORBIDDEN[(source, target)])
 
-        # Check that non-None targets are canonical
-        if target is not None and target not in CANONICAL_LABELS:
+        # Check that the target is canonical
+        if target not in CANONICAL_LABELS:
             raise ValueError(
                 f"Label mapping error: '{source}' → '{target}' is not a canonical label. "
                 f"Valid targets: {CANONICAL_LABELS} (or None to exclude)."
