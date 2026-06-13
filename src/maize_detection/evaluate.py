@@ -90,7 +90,11 @@ def compute_metrics(y_true, y_pred, class_names: list[str] = CANONICAL_LABELS) -
     }
 
 
-def plot_confusion_matrix(metrics: dict, out_path: Path) -> None:
+def plot_confusion_matrix(
+    metrics: dict,
+    out_path: Path,
+    title: str = "In-domain confusion matrix (controlled test split)",
+) -> None:
     """Row-normalized confusion matrix heatmap; cells annotated with raw counts."""
     import matplotlib.pyplot as plt
 
@@ -105,7 +109,7 @@ def plot_confusion_matrix(metrics: dict, out_path: Path) -> None:
     ax.set_yticks(range(len(names)), names)
     ax.set_xlabel("predicted")
     ax.set_ylabel("true")
-    ax.set_title("In-domain confusion matrix (controlled test split)")
+    ax.set_title(title)
     for i in range(len(names)):
         for j in range(len(names)):
             txt = f"{int(cm[i, j])}\n{cm_norm[i, j]:.0%}"
