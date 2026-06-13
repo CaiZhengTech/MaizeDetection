@@ -1,0 +1,30 @@
+# ---------------------------------------------------------------
+# PyTorch CPU (Windows + pip) — install FIRST, before this file:
+#
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+#
+# Source: https://pytorch.org/get-started/locally/
+#   OS: Windows | Package: Pip | Language: Python | Compute: CPU
+# ---------------------------------------------------------------
+torch
+torchvision
+
+# data / ML
+scikit-learn
+Pillow
+matplotlib
+numpy
+
+# HuggingFace (PlantVillage dataset + leaf_id metadata)
+datasets
+
+# Kaggle data access (CD&S / future datasets)
+kagglehub
+
+# utilities
+pyyaml
+tqdm
+
+# notebooks
+jupyter
+nbformat
