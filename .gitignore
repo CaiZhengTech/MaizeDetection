@@ -1,0 +1,26 @@
+# data and model artifacts — never commit
+data/
+outputs/
+
+# virtual environment
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# model checkpoints and weights
+*.pt
+*.pth
+*.ckpt
+
+# Kaggle credentials
+.kaggle/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# OS artifacts
+.DS_Store
+Thumbs.db

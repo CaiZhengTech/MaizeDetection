@@ -1,0 +1,9 @@
+[project]
+name = "maize-detection"
+version = "0.1.0"
+description = "Corn foliar disease classifier with controlled-vs-field domain-gap measurement"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]

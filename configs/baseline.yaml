@@ -1,0 +1,27 @@
+seed: 42
+
+classes:
+  - healthy
+  - common_rust
+  - northern_leaf_blight
+  - gray_leaf_spot
+
+paths:
+  data_raw_plantvillage: data/raw/plantvillage
+  data_raw_cds: data/raw/cds
+  data_processed: data/processed
+  data_cds_overlap: data/external/cds_overlap
+  outputs: outputs
+  checkpoints: outputs/checkpoints
+
+training:
+  batch_size: 32
+  num_workers: 0        # Windows-safe default; increase on Linux/Mac
+
+  phase_a:              # frozen backbone — head only
+    epochs: 5
+    lr: 1.0e-3
+
+  phase_b:              # full fine-tune — lower LR
+    epochs: 15
+    lr: 1.0e-4
