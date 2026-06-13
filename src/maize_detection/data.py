@@ -48,20 +48,21 @@ COMMON_RUST_LEAKAGE_CAVEAT: str = (
 import csv
 from collections import Counter, defaultdict
 from pathlib import Path
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, cast
 
+import numpy as np
 from sklearn.model_selection import GroupShuffleSplit
 
 from .labels import CANONICAL_LABELS
 
 if TYPE_CHECKING:  # keep torch out of the import path for the pure-split logic
-    from torch.utils.data import DataLoader
+    from torch.utils.data import DataLoader, Dataset
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 MANIFEST_PATH = PROJECT_ROOT / "data" / "processed" / "plantvillage_manifest.csv"
 SPLITS_PATH = PROJECT_ROOT / "data" / "processed" / "plantvillage_splits.csv"
 
-SPLIT_NAMES = ("train", "val", "test")
+SPLIT_NAMES: tuple[str, ...] = ("train", "val", "test")
 SPLIT_FIELDS = ["image_path", "canonical_label", "leaf_id", "split"]
 LABEL_TO_IDX: dict[str, int] = {label: i for i, label in enumerate(CANONICAL_LABELS)}
 
@@ -102,27 +103,27 @@ def assign_splits(
 
     split_of_leaf: dict[str, str] = {}
     for cls, cls_rows in by_class.items():
-        leaves = sorted({r["leaf_id"] for r in cls_rows})
+        leaves = np.array(sorted({r["leaf_id"] for r in cls_rows}))
         if len(leaves) < 3:
             raise ValueError(
                 f"class '{cls}' has only {len(leaves)} leaf group(s); "
                 "cannot form non-empty train/val/test. Check the manifest."
             )
-        # Stage 1: test vs rest (groups == leaves, one element each)
+        # Stage 1: test vs rest (each "sample" is a leaf; groups == leaves)
         gss_test = GroupShuffleSplit(n_splits=1, test_size=test_frac, random_state=seed)
         rest_idx, test_idx = next(gss_test.split(leaves, groups=leaves))
-        rest_leaves = [leaves[i] for i in rest_idx]
-        for i in test_idx:
-            split_of_leaf[leaves[i]] = "test"
+        rest_leaves = leaves[rest_idx]
+        for leaf in leaves[test_idx]:
+            split_of_leaf[str(leaf)] = "test"
         # Stage 2: val vs train within the remainder
         gss_val = GroupShuffleSplit(
             n_splits=1, test_size=val_frac_of_remainder, random_state=seed
         )
         train_idx, val_idx = next(gss_val.split(rest_leaves, groups=rest_leaves))
-        for i in train_idx:
-            split_of_leaf[rest_leaves[i]] = "train"
-        for i in val_idx:
-            split_of_leaf[rest_leaves[i]] = "val"
+        for leaf in rest_leaves[train_idx]:
+            split_of_leaf[str(leaf)] = "train"
+        for leaf in rest_leaves[val_idx]:
+            split_of_leaf[str(leaf)] = "val"
 
     return [{**r, "split": split_of_leaf[r["leaf_id"]]} for r in rows]
 
@@ -271,7 +272,10 @@ def build_dataloaders(
         srows = [r for r in rows if r["split"] == split]
         ds = MaizeDataset(srows, build_transforms(train=(split == "train"), image_size=image_size))
         loaders[split] = DataLoader(
-            ds,
+            # MaizeDataset is a map-style dataset (implements __len__/__getitem__);
+            # torch consumes that protocol directly. cast satisfies the stub, which
+            # expects a Dataset subclass.
+            cast("Dataset", ds),
             batch_size=batch_size,
             shuffle=(split == "train"),
             num_workers=num_workers,
