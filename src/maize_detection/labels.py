@@ -5,6 +5,8 @@ The four canonical label strings are the only valid targets throughout the
 codebase. validate_mapping() must be called on any external mapping before use.
 """
 
+from collections.abc import Mapping
+
 CANONICAL_LABELS: list[str] = [
     "healthy",
     "common_rust",
@@ -41,7 +43,7 @@ _FORBIDDEN: dict[tuple[str, str], str] = {
 }
 
 
-def validate_mapping(mapping: dict[str, str | None]) -> None:
+def validate_mapping(mapping: Mapping[str, str | None]) -> None:
     """Raise ValueError if *mapping* contains any illegal or unrecognised target.
 
     Call this on every external label mapping before it is used anywhere in the
