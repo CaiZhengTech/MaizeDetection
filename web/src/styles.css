@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: oklch(0.98 0.025 95);
+  --color-foreground: oklch(0.24 0.04 140);
+  --color-card: oklch(0.995 0.012 95);
+  --color-primary: oklch(0.46 0.11 145);
+  --color-primary-foreground: oklch(0.98 0.025 95);
+  --color-secondary: oklch(0.94 0.06 95);
+  --color-secondary-foreground: oklch(0.3 0.06 140);
+  --color-muted: oklch(0.96 0.025 95);
+  --color-muted-foreground: oklch(0.5 0.03 130);
+  --color-accent: oklch(0.86 0.14 90);
+  --color-accent-foreground: oklch(0.28 0.06 140);
+  --color-destructive: oklch(0.58 0.18 28);
+  --color-warning: oklch(0.82 0.14 80);
+  --color-warning-foreground: oklch(0.38 0.08 60);
+  --color-success: oklch(0.55 0.13 150);
+  --color-border: oklch(0.88 0.03 100);
+  --color-ring: oklch(0.46 0.11 145);
+  --color-corn: oklch(0.85 0.16 88);
+  --color-leaf: oklch(0.55 0.13 148);
+
+  --font-display: "Fraunces", sans-serif;
+  --font-sans: "Inter", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+/* ── Dark theme ──────────────────────────────────── */
+.dark {
+  --color-background: oklch(0.16 0.02 145);
+  --color-foreground: oklch(0.90 0.02 95);
+  --color-card: oklch(0.20 0.025 140);
+  --color-primary: oklch(0.58 0.13 145);
+  --color-primary-foreground: oklch(0.14 0.02 145);
+  --color-secondary: oklch(0.25 0.03 140);
+  --color-secondary-foreground: oklch(0.85 0.04 95);
+  --color-muted: oklch(0.22 0.02 140);
+  --color-muted-foreground: oklch(0.62 0.03 130);
+  --color-accent: oklch(0.72 0.12 90);
+  --color-accent-foreground: oklch(0.90 0.03 95);
+  --color-destructive: oklch(0.62 0.18 28);
+  --color-warning: oklch(0.78 0.13 80);
+  --color-warning-foreground: oklch(0.88 0.06 80);
+  --color-success: oklch(0.62 0.14 150);
+  --color-border: oklch(0.30 0.03 140);
+  --color-ring: oklch(0.58 0.13 145);
+  --color-corn: oklch(0.78 0.14 88);
+  --color-leaf: oklch(0.62 0.14 148);
+}
+
+/* ── Base styles ─────────────────────────────────── */
+body {
+  font-family: var(--font-sans);
+  color: var(--color-foreground);
+  background-color: var(--color-background);
+  background-image: radial-gradient(
+      70% 50% at 10% 0%,
+      oklch(0.94 0.09 95 / 0.7) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      50% 40% at 100% 100%,
+      oklch(0.9 0.09 140 / 0.5) 0%,
+      transparent 60%
+    );
+  margin: 0;
+  transition: background-color 300ms ease, color 300ms ease;
+}
+
+.dark body {
+  background-image: radial-gradient(
+      70% 50% at 10% 0%,
+      oklch(0.22 0.06 145 / 0.5) 0%,
+      transparent 60%
+    ),
+    radial-gradient(
+      50% 40% at 100% 100%,
+      oklch(0.20 0.05 90 / 0.35) 0%,
+      transparent 60%
+    );
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.02em;
+}
+
+/* ── Animations ──────────────────────────────────── */
+@keyframes dialog-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-dialog-in {
+  animation: dialog-in 200ms ease-out;
+}
