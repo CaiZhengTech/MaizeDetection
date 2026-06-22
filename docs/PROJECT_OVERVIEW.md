@@ -205,6 +205,10 @@ correctness" answer:
 - **Secrets hygiene:** no hardcoded tokens; datasets/checkpoints gitignored.
 - **Honest scope fence:** explicitly did *not* build FastAPI/Docker/etc. — those are
   V2. Knowing what *not* to build is a signal too.
+- **Web frontend** (React 19 + Tailwind CSS v4 + Vite 6): drag-and-drop classifier
+  UI with a sample image gallery, domain-gap visualization showing the actual M5/M6
+  numbers, dark mode, and interactive class info dialogs. Currently uses a mock
+  prediction — ready to connect to a real backend.
 
 ---
 
@@ -244,6 +248,13 @@ Open 4-way shows true deployment behavior (and exposes the leak-to-healthy failu
 restricted 2-class isolates the surviving discriminative signal. One number alone
 would either overstate or hide the problem.
 
+**"Why did you build a frontend for a research classifier?"**
+The domain-gap numbers are the project's centerpiece but they're dry in a table. The
+web UI lets someone drag a leaf image and get a prediction while seeing the 98.4% vs
+61.7% gap visualized right on the page — it makes the "don't trust this in the field"
+message visceral instead of academic. It also shows I can ship a polished end-to-end
+product, not just a notebook.
+
 ---
 
 ## 7. Numbers cheat-sheet (memorize these)
@@ -260,6 +271,7 @@ would either overstate or hide the problem.
 | Published benchmark (GLS) | ~94% → ~55% |
 | Test count | 40 passing |
 | Datasets | PlantVillage (train/in-domain), CD&S (field eval, NLB+GLS) |
+| Frontend | React 19, Tailwind CSS v4, Vite 6 |
 
 *Full per-class tables and confusion matrices live in `README.md` and the generated
 `outputs/metrics_*.json`.*

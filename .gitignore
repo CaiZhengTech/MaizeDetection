@@ -21,6 +21,10 @@ __pycache__/
 .ipynb_checkpoints/
 *.ipynb_checkpoints
 
+# Node / frontend
+web/node_modules/
+web/dist/
+
 # OS artifacts
 .DS_Store
 Thumbs.db

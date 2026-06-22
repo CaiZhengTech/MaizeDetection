@@ -28,3 +28,7 @@ tqdm
 # notebooks
 jupyter
 nbformat
+
+# web backend (serve.py — dev model server for the frontend)
+flask
+flask-cors

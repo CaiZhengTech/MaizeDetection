@@ -131,8 +131,12 @@ MaizeDetection/
 │   ├── 03_evaluate_in_domain.ipynb    # local CPU
 │   └── 04_evaluate_cross_domain.ipynb # local CPU — the domain-gap notebook
 ├── tests/                         # leaf-leakage, label integrity, metrics, contract
+├── web/                           # React 19 + Tailwind v4 + Vite 6 frontend
+│   ├── src/App.tsx                #   single-page classifier UI
+│   └── src/styles.css             #   OKLCH theme with dark mode
+├── docs/                          # implementation plan, project overview
 ├── data/    outputs/              # git-ignored (datasets, checkpoints, figures)
-└── MaizeDetection_V1_Implementation_Plan.md   # full build spec
+└── CLAUDE.md                      # standing instructions for Claude Code sessions
 ```
 
 ---
@@ -170,8 +174,12 @@ python scripts/check_env.py
 | `pyyaml` | config loading (`configs/baseline.yaml`) |
 | `tqdm` | download/extract progress |
 | `jupyter`, `nbformat` | the four notebooks |
+| `flask`, `flask-cors` | minimal dev model server for the web frontend |
 
 Augmentation uses `torchvision.transforms.v2` only (no `albumentations` in V1).
+
+**Frontend** (`web/`): React 19, Tailwind CSS v4 (OKLCH theming), Vite 6.
+Install separately with `cd web && npm install`.
 
 ---
 
@@ -238,6 +246,34 @@ python -m src.maize_detection.predict path/to/leaf.jpg
 
 ---
 
+## Web frontend
+
+An interactive single-page app for classifying leaf images in the browser, built
+with **React 19**, **Tailwind CSS v4** (OKLCH color palette), and **Vite 6**.
+
+```powershell
+# Terminal 1 — model server (requires trained checkpoint)
+python serve.py                    # → http://localhost:5000
+
+# Terminal 2 — frontend
+cd web
+npm install
+npm run dev                        # → http://localhost:5173
+```
+
+> On Windows, if torch crashes with an OpenMP/MKL DLL error, `serve.py`
+> sets `KMP_DUPLICATE_LIB_OK=TRUE` automatically.
+
+Features:
+- **Real model inference** — uploads are classified by the actual EfficientNet-B0 model via `POST /predict`
+- **Drag-and-drop upload** — drop a leaf image or drag a sample from the built-in gallery
+- **Sample image gallery** — 8 real leaf thumbnails (2 per class, controlled/field tagged) from the dataset
+- **Domain gap visualization** — side-by-side stat cards (98.4% vs 61.7%) and per-class recall bars with actual M5/M6 numbers
+- **Dark mode** — sun/moon toggle in the header with localStorage persistence and system-preference default
+- **Class info dialogs** — gradient-header modals with disease descriptions, symptoms, and Wikipedia links
+
+---
+
 ## Datasets
 
 | dataset | role | type | source |
@@ -282,8 +318,10 @@ Full rationale: `MaizeDetection_V1_Implementation_Plan.md` and `CLAUDE.md`.
 ## Scope
 
 **V1 (this release):** data download/inspection, leak-safe splits, EfficientNet-B0
-transfer baseline, in-domain eval, CD&S cross-domain eval (NLB + GLS), CPU inference.
+transfer baseline, in-domain eval, CD&S cross-domain eval (NLB + GLS), CPU
+inference, and a **web frontend** (React 19 + Tailwind CSS v4 + Vite 6) for
+interactive classification with domain-gap visualization and dark mode.
 
 **Deliberately out of scope (V2+):** FastAPI/serving, Docker, databases, cloud
 deploy, experiment tracking, ONNX, object detection/segmentation, multi-label
-datasets (UPretoria), any frontend. None of these are scaffolded.
+datasets (UPretoria). None of these are scaffolded.
